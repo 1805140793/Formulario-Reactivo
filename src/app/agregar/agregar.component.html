@@ -1,0 +1,113 @@
+<div class="container">
+  <!--Asocio el formulario creado en TS
+    Mediante el property dibinding-->
+  <form [formGroup]="formularioCreado">
+    <div class="form-group">
+      <label>Nombre: </label>
+      <!--enlazo al control-->
+      <input type="text" class="form-control" formControlName="nombre">
+
+      <!--mensaje de alerta
+      vinculo con la propiedad valida para que sea dinamico-->
+      <div class="alert alert-danger" role="alert"
+      *ngIf="formularioCreado.controls['nombre'].invalid && formularioCreado.controls['nombre'].dirty">
+        <span *ngIf="formularioCreado.controls['nombre'].errors?.required">Nombre requerido!</span>
+      </div>
+
+    </div>
+
+    <!--//////////////// DEPURACION ////////////////
+      mostrar el valor de la propiedad "isvalid"
+          propiedad controls = da acceso a todas las variables de los controles
+          como nombre, correo y clave
+    Propiedad invalid: {{formularioCreado.controls['nombre'].invalid}} -->
+
+    <!--Propiedad que permite verificar si paso algo en el control
+        Dato sucio: El usuario ya lleno todo y nuevamente ingreso otra cosa
+    Propiedad dirty: {{formularioCreado.controls['nombre'].dirty}}-->
+    <div class="form-group">
+      <label>Correo: </label>
+      <input type="text" class="form-control" formControlName="correo">
+
+      <!--si quiero mostrar dos mensajes de alerta o más les controlo asociando-->
+      <div *ngIf="formularioCreado.controls['correo'].invalid && formularioCreado.controls['correo'].dirty">
+      <!--si los control no pasa la validacion y son datos sucios moestrar el mensaje-->
+        <div class="alert alert-danger" role="alert"
+        *ngIf="formularioCreado.controls['correo'].errors?.required">
+          Campo Correo requerido!
+        </div>
+        <div class="alert alert-danger" role="alert"
+        *ngIf="formularioCreado.controls['correo'].errors?.email">
+          Correo no cumple el formato válido!
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+      <label>Contraseña: </label>
+      <input type="password" class="form-control" formControlName="clave">
+
+      <div *ngIf="formularioCreado.controls['clave'].invalid && formularioCreado.controls['clave'].dirty">
+      <!--si los control no pasa la validacion y son datos sucios moestrar el mensaje-->
+        <div class="alert alert-danger" role="alert"
+        *ngIf="formularioCreado.controls['clave'].errors?.required">
+          Campo Contraseña requerido!
+        </div>
+        <div class="alert alert-danger" role="alert"
+        *ngIf="formularioCreado.controls['clave'].errors?.minlength">
+          Contraseña debe contener minimo 6 caracteres!
+        </div>
+      </div>
+
+    </div>
+
+    <!--Digo que si el formulario es valido muestro el boton caso contrario no
+      Si el registro es nuevo solo activo el boton de agregar-->
+    <button class="btn btn-primary"
+     (click)="agregar()" [disabled]="!formularioCreado.valid"
+     *ngIf="esNuevo">Agregar</button>
+
+    <!--Si el registro no es nuevo, entonces muestro el boton de editar-->
+    <button class="btn btn-success"
+     (click)="editar()" [disabled]="!formularioCreado.valid"
+     *ngIf="!esNuevo">Editar</button>
+  </form>
+</div>
+<!--//////////////// DEPURACION DEL FORMULARIO ////////////////
+<p class="container">Formulario valido: {{formularioCreado.valid }}</p>-->
+<p class="container">Formulario value: {{formularioCreado.value | json}}</p>
+
+<!--Mostrar los datos-->
+<div class="container mt-4">
+  <div class="row">
+    <h4>Listado de Usuarios</h4>
+  </div>
+  <br>
+
+  <table class="table"
+    *ngIf="listaUsuarios.length>0">
+    <thead>
+      <th>Posicion</th>
+      <th>Nombre</th>
+      <th>Correo</th>
+      <th>Clave</th>
+      <th>Acción</th>
+    </thead>
+
+    <tbody>
+      <tr  *ngFor="let item of listaUsuarios let i=index">
+       <td>{{i}}</td>
+       <td>{{item.nombre}}</td>
+       <td>{{item.correo}}</td>
+       <td [ngStyle]="{'font-style':'italic'}">{{item.clave}}</td>
+
+       <td><button class="btn btn-secondary"
+        (click)="editarUsuarioActual(i)">Editar Usuario</button>
+       <button class="btn btn-danger"
+       (click)="eliminarUsuarioActual(i)">Eliminar Usuario</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
